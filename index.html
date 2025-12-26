@@ -1,145 +1,198 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>2D Character Creator</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      background:#0f172a;
-      color:#e5e7eb;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:16px;
-      padding:20px;
+<meta charset="UTF-8">
+<title>Character Creator</title>
+<style>
+    body{
+        background:#10131a;
+        color:#e8ecf3;
+        font-family:Segoe UI, Helvetica, Arial;
+        display:flex;
+        flex-direction:row;
+        gap:40px;
+        padding:30px;
     }
-    .slider-box{
-      background:#020617;
-      border:1px solid #1e293b;
-      border-radius:12px;
-      padding:16px;
-      min-width:360px;
+    #controls{
+        width:300px;
+        background:#161b24;
+        padding:20px;
+        border-radius:18px;
+        box-shadow:0 0 20px rgba(0,0,0,.4);
     }
-    label{display:block;margin-top:10px}
-    canvas{
-      background:#020617;
-      border:2px solid #1e293b;
-      border-radius:12px;
+    h2{
+        margin-top:0;
     }
-  </style>
+    .sliderGroup{
+        margin-bottom:18px;
+    }
+    .sliderGroup label{
+        display:block;
+        margin-bottom:4px;
+        font-size:14px;
+        opacity:.8;
+    }
+    .sliderGroup input{
+        width:100%;
+    }
+    #stage{
+        width:450px;
+        height:850px;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        background:#0d1118;
+        border-radius:18px;
+        box-shadow:0 0 25px rgba(0,0,0,.45);
+    }
+</style>
 </head>
 
 <body>
 
-  <h2>✨ 2D Character Creator ✨</h2>
+<div id="controls">
+    <h2>Character Creator</h2>
 
-  <canvas id="charCanvas" width="420" height="420"></canvas>
+    <div class="sliderGroup">
+        <label>Height</label>
+        <input type="range" id="height" min="0.8" max="1.3" value="1" step="0.01">
+    </div>
 
-  <div class="slider-box">
-    <label>Height: <span id="hVal"></span></label>
-    <input type="range" id="height" min="0.8" max="1.6" step="0.01" value="1.1">
+    <div class="sliderGroup">
+        <label>Shoulder Width</label>
+        <input type="range" id="shoulders" min="0.8" max="1.4" value="1" step="0.01">
+    </div>
 
-    <label>Left Arm Length: <span id="laVal"></span></label>
-    <input type="range" id="leftArm" min="0.6" max="2" step="0.01" value="1.2">
+    <div class="sliderGroup">
+        <label>Bust Size</label>
+        <input type="range" id="chest" min="0.8" max="1.5" value="1" step="0.01">
+    </div>
 
-    <label>Right Arm Length: <span id="raVal"></span></label>
-    <input type="range" id="rightArm" min="0.6" max="2" step="0.01" value="1.2">
+    <div class="sliderGroup">
+        <label>Waist Size</label>
+        <input type="range" id="waist" min="0.6" max="1.4" value="1" step="0.01">
+    </div>
 
-    <label>Left Leg Length: <span id="llVal"></span></label>
-    <input type="range" id="leftLeg" min="0.6" max="2" step="0.01" value="1.2">
+    <div class="sliderGroup">
+        <label>Hip Size</label>
+        <input type="range" id="hips" min="0.8" max="1.7" value="1" step="0.01">
+    </div>
 
-    <label>Right Leg Length: <span id="rlVal"></span></label>
-    <input type="range" id="rightLeg" min="0.6" max="2" step="0.01" value="1.2">
-  </div>
+    <div class="sliderGroup">
+        <label>Arm Thickness</label>
+        <input type="range" id="arms" min="0.7" max="1.5" value="1" step="0.01">
+    </div>
+
+    <div class="sliderGroup">
+        <label>Leg Length</label>
+        <input type="range" id="legs" min="0.9" max="1.3" value="1" step="0.01">
+    </div>
+
+    <div class="sliderGroup">
+        <label>Leg Thickness</label>
+        <input type="range" id="legWidth" min="0.7" max="1.5" value="1" step="0.01">
+    </div>
+
+</div>
+
+
+<div id="stage">
+
+<svg id="avatar" width="300" height="780" viewBox="0 0 300 780">
+
+    <!-- HEAD OUTLINE (blank, no face, no hair) -->
+    <ellipse id="head" cx="150" cy="75" rx="38" ry="48" fill="#dedede" stroke="#999" stroke-width="2"/>
+
+    <!-- NECK -->
+    <rect id="neck" x="135" y="115" width="30" height="35" rx="10" fill="#dedede" stroke="#999" stroke-width="2"/>
+
+    <!-- TORSO -->
+    <path id="torso" fill="#dedede" stroke="#999" stroke-width="2"
+          d="M105 150 
+             Q150 150 195 150
+             Q215 220 190 300
+             Q175 350 150 360
+             Q125 350 110 300
+             Q85 220 105 150Z" />
+
+    <!-- HIPS -->
+    <ellipse id="hipsShape" cx="150" cy="380" rx="65" ry="45" fill="#dedede" stroke="#999" stroke-width="2"/>
+
+    <!-- LEFT ARM -->
+    <rect id="leftArm" x="65" y="160" width="28" height="180" rx="18" fill="#dedede" stroke="#999" stroke-width="2"/>
+
+    <!-- RIGHT ARM -->
+    <rect id="rightArm" x="207" y="160" width="28" height="180" rx="18" fill="#dedede" stroke="#999" stroke-width="2"/>
+
+    <!-- LEFT LEG -->
+    <rect id="leftLeg" x="120" y="420" width="28" height="270" rx="18" fill="#dedede" stroke="#999" stroke-width="2"/>
+
+    <!-- RIGHT LEG -->
+    <rect id="rightLeg" x="152" y="420" width="28" height="270" rx="18" fill="#dedede" stroke="#999" stroke-width="2"/>
+
+    <!-- FEET -->
+    <ellipse cx="134" cy="705" rx="28" ry="14" fill="#dedede" stroke="#999" stroke-width="2"/>
+    <ellipse cx="166" cy="705" rx="28" ry="14" fill="#dedede" stroke="#999" stroke-width="2"/>
+
+</svg>
+
+</div>
+
 
 <script>
-const c = document.getElementById("charCanvas");
-const ctx = c.getContext("2d");
 
-const sliders = {
-  height: height,
-  leftArm: leftArm,
-  rightArm: rightArm,
-  leftLeg: leftLeg,
-  rightLeg: rightLeg
-};
+function $(id){return document.getElementById(id);}
 
-const vals = {
-  height: hVal,
-  leftArm: laVal,
-  rightArm: raVal,
-  leftLeg: llVal,
-  rightLeg: rlVal
-};
+const avatar = $("avatar");
+const head = $("head");
+const neck = $("neck");
+const torso = $("torso");
+const hipsShape = $("hipsShape");
+const leftArm = $("leftArm");
+const rightArm = $("rightArm");
+const leftLeg = $("leftLeg");
+const rightLeg = $("rightLeg");
 
-Object.values(sliders).forEach(s =>
-  s.addEventListener("input", draw)
-);
+function update(){
+    let height = parseFloat($("height").value);
+    let shoulders = parseFloat($("shoulders").value);
+    let chest = parseFloat($("chest").value);
+    let waist = parseFloat($("waist").value);
+    let hips = parseFloat($("hips").value);
+    let arms = parseFloat($("arms").value);
+    let legs = parseFloat($("legs").value);
+    let legWidth = parseFloat($("legWidth").value);
 
-function draw(){
+    avatar.style.transform = `scale(${height})`;
 
-  const H = parseFloat(sliders.height.value);
-  const LA = parseFloat(sliders.leftArm.value);
-  const RA = parseFloat(sliders.rightArm.value);
-  const LL = parseFloat(sliders.leftLeg.value);
-  const RL = parseFloat(sliders.rightLeg.value);
+    // Shoulders widen torso top
+    torso.setAttribute("d",
+      `M${105-(shoulders-1)*20} 150
+       Q150 150 ${195+(shoulders-1)*20} 150
+       Q${215+(chest-1)*25} 220 ${190+(waist-1)*10} 300
+       Q175 350 150 360
+       Q125 350 ${110-(waist-1)*10} 300
+       Q${85-(chest-1)*25} 220 ${105-(shoulders-1)*20} 150Z`
+    );
 
-  vals.height.textContent = H.toFixed(2);
-  vals.leftArm.textContent = LA.toFixed(2);
-  vals.rightArm.textContent = RA.toFixed(2);
-  vals.leftLeg.textContent = LL.toFixed(2);
-  vals.rightLeg.textContent = RL.toFixed(2);
+    hipsShape.setAttribute("rx", 65*hips);
 
-  ctx.clearRect(0,0,c.width,c.height);
-  ctx.save();
-  ctx.translate(210,130);
+    leftArm.setAttribute("width", 28*arms);
+    rightArm.setAttribute("width", 28*arms);
 
-  const head = 25;
-  const torso = 70 * H;
-  const baseLimb = 50;
+    leftLeg.setAttribute("height", 270*legs);
+    rightLeg.setAttribute("height", 270*legs);
 
-  ctx.strokeStyle="#67e8f9";
-  ctx.lineWidth=4;
-  ctx.lineCap="round";
-
-  // Head
-  ctx.beginPath();
-  ctx.arc(0,-head-10,head,0,Math.PI*2);
-  ctx.stroke();
-
-  // Torso
-  ctx.beginPath();
-  ctx.moveTo(0,0);
-  ctx.lineTo(0,torso);
-  ctx.stroke();
-
-  // Arms anchor
-  const shoulderY = 20;
-
-  // Left arm
-  ctx.beginPath();
-  ctx.moveTo(0,shoulderY);
-  ctx.lineTo(-baseLimb*LA,shoulderY);
-  ctx.stroke();
-
-  // Right arm
-  ctx.beginPath();
-  ctx.moveTo(0,shoulderY);
-  ctx.lineTo(baseLimb*RA,shoulderY);
-  ctx.stroke();
-
-  // Legs
-  ctx.beginPath();
-  ctx.moveTo(0,torso);
-  ctx.lineTo(-baseLimb*0.6*LL, torso + baseLimb*LL);
-  ctx.moveTo(0,torso);
-  ctx.lineTo(baseLimb*0.6*RL, torso + baseLimb*RL);
-  ctx.stroke();
-
-  ctx.restore();
+    leftLeg.setAttribute("width", 28*legWidth);
+    rightLeg.setAttribute("width", 28*legWidth);
 }
 
-draw();
+document.querySelectorAll("input").forEach(x=>{
+    x.addEventListener("input", update);
+});
+
+update();
+
 </script>
 
 </body>
