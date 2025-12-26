@@ -18,7 +18,7 @@
       border:1px solid #1e293b;
       border-radius:12px;
       padding:16px;
-      min-width:340px;
+      min-width:360px;
     }
     label{display:block;margin-top:10px}
     canvas{
@@ -33,82 +33,113 @@
 
   <h2>✨ 2D Character Creator ✨</h2>
 
-  <canvas id="charCanvas" width="400" height="400"></canvas>
+  <canvas id="charCanvas" width="420" height="420"></canvas>
 
   <div class="slider-box">
-    <label>Height: <span id="heightVal"></span></label>
-    <input type="range" id="heightSlider" min="0.8" max="1.6" step="0.01" value="1.1">
+    <label>Height: <span id="hVal"></span></label>
+    <input type="range" id="height" min="0.8" max="1.6" step="0.01" value="1.1">
 
-    <label>Limb Length: <span id="limbVal"></span></label>
-    <input type="range" id="limbSlider" min="0.8" max="1.8" step="0.01" value="1.2">
+    <label>Left Arm Length: <span id="laVal"></span></label>
+    <input type="range" id="leftArm" min="0.6" max="2" step="0.01" value="1.2">
+
+    <label>Right Arm Length: <span id="raVal"></span></label>
+    <input type="range" id="rightArm" min="0.6" max="2" step="0.01" value="1.2">
+
+    <label>Left Leg Length: <span id="llVal"></span></label>
+    <input type="range" id="leftLeg" min="0.6" max="2" step="0.01" value="1.2">
+
+    <label>Right Leg Length: <span id="rlVal"></span></label>
+    <input type="range" id="rightLeg" min="0.6" max="2" step="0.01" value="1.2">
   </div>
 
 <script>
-const canvas = document.getElementById("charCanvas");
-const ctx = canvas.getContext("2d");
+const c = document.getElementById("charCanvas");
+const ctx = c.getContext("2d");
 
-const heightSlider = document.getElementById("heightSlider");
-const limbSlider = document.getElementById("limbSlider");
+const sliders = {
+  height: height,
+  leftArm: leftArm,
+  rightArm: rightArm,
+  leftLeg: leftLeg,
+  rightLeg: rightLeg
+};
 
-const heightVal = document.getElementById("heightVal");
-const limbVal = document.getElementById("limbVal");
+const vals = {
+  height: hVal,
+  leftArm: laVal,
+  rightArm: raVal,
+  leftLeg: llVal,
+  rightLeg: rlVal
+};
 
-function drawCharacter() {
+Object.values(sliders).forEach(s =>
+  s.addEventListener("input", draw)
+);
 
-  const heightScale = parseFloat(heightSlider.value);
-  const limbScale = parseFloat(limbSlider.value);
+function draw(){
 
-  heightVal.textContent = heightScale.toFixed(2);
-  limbVal.textContent = limbScale.toFixed(2);
+  const H = parseFloat(sliders.height.value);
+  const LA = parseFloat(sliders.leftArm.value);
+  const RA = parseFloat(sliders.rightArm.value);
+  const LL = parseFloat(sliders.leftLeg.value);
+  const RL = parseFloat(sliders.rightLeg.value);
 
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+  vals.height.textContent = H.toFixed(2);
+  vals.leftArm.textContent = LA.toFixed(2);
+  vals.rightArm.textContent = RA.toFixed(2);
+  vals.leftLeg.textContent = LL.toFixed(2);
+  vals.rightLeg.textContent = RL.toFixed(2);
 
+  ctx.clearRect(0,0,c.width,c.height);
   ctx.save();
-  ctx.translate(200, 140);
+  ctx.translate(210,130);
 
-  // Base proportions
-  const headRadius = 25;
-  const torsoHeight = 70 * heightScale;
-  const limbLength = 50 * limbScale;
+  const head = 25;
+  const torso = 70 * H;
+  const baseLimb = 50;
 
-  ctx.strokeStyle = "#67e8f9";
-  ctx.lineWidth = 4;
-  ctx.lineCap = "round";
+  ctx.strokeStyle="#67e8f9";
+  ctx.lineWidth=4;
+  ctx.lineCap="round";
 
   // Head
   ctx.beginPath();
-  ctx.arc(0, -headRadius - 10, headRadius, 0, Math.PI * 2);
+  ctx.arc(0,-head-10,head,0,Math.PI*2);
   ctx.stroke();
 
   // Torso
   ctx.beginPath();
-  ctx.moveTo(0, 0);
-  ctx.lineTo(0, torsoHeight);
+  ctx.moveTo(0,0);
+  ctx.lineTo(0,torso);
   ctx.stroke();
 
-  // Arms
+  // Arms anchor
+  const shoulderY = 20;
+
+  // Left arm
   ctx.beginPath();
-  ctx.moveTo(0, 20);
-  ctx.lineTo(-limbLength, 20);
-  ctx.moveTo(0, 20);
-  ctx.lineTo(limbLength, 20);
+  ctx.moveTo(0,shoulderY);
+  ctx.lineTo(-baseLimb*LA,shoulderY);
+  ctx.stroke();
+
+  // Right arm
+  ctx.beginPath();
+  ctx.moveTo(0,shoulderY);
+  ctx.lineTo(baseLimb*RA,shoulderY);
   ctx.stroke();
 
   // Legs
   ctx.beginPath();
-  ctx.moveTo(0, torsoHeight);
-  ctx.lineTo(-limbLength * 0.6, torsoHeight + limbLength);
-  ctx.moveTo(0, torsoHeight);
-  ctx.lineTo(limbLength * 0.6, torsoHeight + limbLength);
+  ctx.moveTo(0,torso);
+  ctx.lineTo(-baseLimb*0.6*LL, torso + baseLimb*LL);
+  ctx.moveTo(0,torso);
+  ctx.lineTo(baseLimb*0.6*RL, torso + baseLimb*RL);
   ctx.stroke();
 
   ctx.restore();
 }
 
-heightSlider.addEventListener("input", drawCharacter);
-limbSlider.addEventListener("input", drawCharacter);
-
-drawCharacter();
+draw();
 </script>
 
 </body>
